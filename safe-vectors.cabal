@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e7931f585c08c468a2f58f812f23414a1117f9edebe95bd724ed8e120d4ae84f
+-- hash: 6b600e1275750c781418ed540472fe9673df4dfabcb5348f3ce7913dbca081f1
 
 name:           safe-vectors
 version:        0.0.0
@@ -15,11 +15,12 @@ build-type:     Simple
 
 library
   exposed-modules:
-      Vec
+      Vector
   other-modules:
       Paths_safe_vectors
   hs-source-dirs:
       src
   build-depends:
       base
+    , vector
   default-language: Haskell2010

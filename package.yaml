@@ -5,8 +5,9 @@ license: MIT
 
 dependencies:
   - base
-
+  - vector
+  
 library:
   source-dirs: src
   exposed-modules:
-    - Vec
+    - Vector
