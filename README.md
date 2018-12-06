@@ -6,7 +6,7 @@ Simple, type-safe linear algebra.
 It's currently still a work in progress but the library provides tagged
 vectors and matrices, and a few operations for manipulating them. This should
 (hopefully) eliminate a lot of dimension checks that have to be done at runtime
-when using untagged tensors.
+when using untagged tensors, while still remaning super _fast_.
 
 ## Supported operations
 ### Vectors
