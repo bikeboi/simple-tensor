@@ -69,6 +69,11 @@ genMatrix pr pc f = let (nRows,nCols) = (,) (fromInteger $ natVal pr) (fromInteg
 (|*>) :: (KnownNat r, KnownNat c,Num a) => Matrix r c a -> Vector c a -> Vector r a
 (|*>) (Matrix rows) (Vector v) = Vector $ V.map (\row -> V.foldl (+) 0 $ V.zipWith (*) row v) rows
 
+transpose :: (KnownNat r, KnownNat c) => Matrix r c a -> Matrix c r a
+transpose (Matrix v) = Matrix $ V.foldl1 (V.zipWith (<>)) v'
+  where v' = fmap V.singleton <$> v
+  
 -- Test Matrices
 m3x4 = genMatrix (Proxy :: Proxy 3) (Proxy :: Proxy 4) (+)
 m3x4' = genMatrix (Proxy :: Proxy 3) (Proxy :: Proxy 4) const
+ 
