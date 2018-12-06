@@ -1,0 +1,12 @@
+name: safe-vectors
+synopsis: Type-safe vectors
+maintainer: Michael Kareithi
+license: MIT
+
+dependencies:
+  - base
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Vec

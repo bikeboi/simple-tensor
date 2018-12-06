@@ -1,0 +1,25 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e7931f585c08c468a2f58f812f23414a1117f9edebe95bd724ed8e120d4ae84f
+
+name:           safe-vectors
+version:        0.0.0
+synopsis:       Type-safe vectors
+maintainer:     Michael Kareithi
+license:        MIT
+build-type:     Simple
+
+library
+  exposed-modules:
+      Vec
+  other-modules:
+      Paths_safe_vectors
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+  default-language: Haskell2010
