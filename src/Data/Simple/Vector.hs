@@ -56,8 +56,8 @@ fromList d p = \xs -> let xs' = take expLen xs
 (<.>) (Vector v) (Vector v') = V.sum $ V.zipWith (*) v v' 
 
 -- | Scalar multiplication
-(<^>) :: Num a => a -> Vector n a -> Vector n a
-(<^>) x (Vector xs) = Vector $ V.map (*x) xs
+(^>) :: Num a => a -> Vector n a -> Vector n a
+(^>) x (Vector xs) = Vector $ V.map (*x) xs
 
 -- ** Useful combinators for manipulating tensors
 -- | Map operation
