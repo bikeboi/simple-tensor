@@ -4,20 +4,22 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6b600e1275750c781418ed540472fe9673df4dfabcb5348f3ce7913dbca081f1
+-- hash: 4c5be482603c68627f1aac9a83792073ddb4ad41b854bddd2f35b5501636b8bf
 
-name:           safe-vectors
+name:           simple-tensor
 version:        0.0.0
-synopsis:       Type-safe vectors
+synopsis:       Simple type-safe tensors
 maintainer:     Michael Kareithi
 license:        MIT
 build-type:     Simple
 
 library
   exposed-modules:
-      Vector
+      Data.Simple.Tensor
   other-modules:
-      Paths_safe_vectors
+      Data.Simple.Matrix
+      Data.Simple.Vector
+      Paths_simple_tensor
   hs-source-dirs:
       src
   build-depends:

@@ -1,2 +1,3 @@
-# Safe Vectors
-Implementation of type-safe vectors. 
+# Simple Tensor
+
+Simple, type-safe linear algebra.

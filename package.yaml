@@ -1,5 +1,5 @@
-name: safe-vectors
-synopsis: Type-safe vectors
+name: simple-tensor
+synopsis: Simple type-safe tensors
 maintainer: Michael Kareithi
 license: MIT
 
@@ -10,4 +10,5 @@ dependencies:
 library:
   source-dirs: src
   exposed-modules:
-    - Vector
+    - Data.Simple.Tensor
+    
