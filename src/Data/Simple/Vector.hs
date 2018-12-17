@@ -59,17 +59,24 @@ fromList d p = \xs -> let xs' = take expLen xs
 (^>) :: Num a => a -> Vector n a -> Vector n a
 (^>) x (Vector xs) = Vector $ V.map (*x) xs
 
--- ** Useful combinators for manipulating tensors
+-- ** Norms
+euclidean :: (Real a,Floating b) => Vector n a -> b 
+euclidean = sqrt . foldlV (+) 0 . mapV (realToFrac . (^2))
+
+manhattan :: (Real a) => Vector n a -> a
+manhattan = foldlV (+) 0 . mapV abs
+
+-- ** Useful combinators for data-structure-like operations on vectors
 -- | Map operation
-mapV :: KnownNat n => (a -> b) -> Vector n a -> Vector n b
+mapV :: (a -> b) -> Vector n a -> Vector n b
 mapV f (Vector v) = Vector $ V.map f v
 
 -- | Left fold
-foldlV :: KnownNat n => (a -> b -> a) -> a -> Vector n b -> a
+foldlV :: (a -> b -> a) -> a -> Vector n b -> a
 foldlV f z (Vector v) = V.foldl f z v
 
 -- | Right fold
-foldrV :: KnownNat n => (a -> b -> b) -> b -> Vector n a -> b
+foldrV :: (a -> b -> b) -> b -> Vector n a -> b
 foldrV f z (Vector v) = V.foldr f z v
 
 -- | ZipWith

@@ -4,13 +4,14 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4c5be482603c68627f1aac9a83792073ddb4ad41b854bddd2f35b5501636b8bf
+-- hash: 915863daeb4b178e4652cef19b08808fde73495c8d2acd4aa10a8d57356cde78
 
 name:           simple-tensor
 version:        0.0.0
 synopsis:       Simple type-safe tensors
 maintainer:     Michael Kareithi
 license:        MIT
+license-file:   LICENSE
 build-type:     Simple
 
 library
