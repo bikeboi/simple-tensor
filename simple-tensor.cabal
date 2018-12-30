@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 915863daeb4b178e4652cef19b08808fde73495c8d2acd4aa10a8d57356cde78
+-- hash: c2b295ae941d8913353a4dd882e7172080025465e73d741e884dc097fa48ab12
 
 name:           simple-tensor
 version:        0.0.0
@@ -25,5 +25,6 @@ library
       src
   build-depends:
       base
+    , reflection
     , vector
   default-language: Haskell2010

@@ -1,35 +1,38 @@
-{-# LANGUAGE DataKinds, KindSignatures #-}
+{-# LANGUAGE DataKinds, KindSignatures, FlexibleInstances #-}
 
 module Data.Simple.Vector where
 
+import Prelude hiding (foldl,map)
+import Unsafe.Coerce
 import GHC.TypeLits
 import Data.Proxy
+import Data.Reflection
 import qualified Data.Vector as V
 
--- |Vector datatype. It's basically newtype wrapper with a type-level Nat
--- around a boxed vector from the 'Data.Vector' package.
-newtype Vector (n :: Nat) a =
- Vector (V.Vector a) deriving Show
+-- | Vector type, row or column
+data VecType = Row | Col
 
--- | Int vector
-type IVec n = Vector n Int
--- | Float vector
-type FVec n = Vector n Float
--- | Double vector
-type DVec n = Vector n Double
+-- | General tagged vector
+newtype Vector (t :: VecType) (n :: Nat) a =
+  Vector (V.Vector a) deriving (Eq, Show)
 
-unsafeTagVector :: KnownNat n => Proxy n -> [a] -> Vector n a
-unsafeTagVector _ xs =Vector $ V.fromList xs
+type CVector n a = Vector Col n a
+type RVector n a = Vector Row n a
+
+-- | Yield a pure unsized vector from it's tagged wrapper.
+-- Use this sparingly
+unsafeTagVector :: KnownNat n => Proxy n -> [a] -> Vector t n a
+unsafeTagVector _ xs = Vector $ V.fromList xs
 
 -- Smart constructors
 -- | Make vector given a known length and a generation function
-mkVector :: KnownNat n => Proxy n -> (Integer -> a) -> Vector n a  
-mkVector p f = Vector $ V.fromList $ map f [1 .. natVal p] 
+mkVector :: KnownNat n => Proxy n -> (Integer -> a) -> Vector t n a  
+mkVector p f = Vector $ V.fromList $ fmap f [1 .. natVal p] 
 
 -- | Make a vector given a known length, a default value and a list.
 -- If the list is too long, it gets truncated. If it's too short,
 -- the remaining length is filled with the default value.
-fromList :: KnownNat n => a -> Proxy n -> ([a] -> Vector n a)
+fromList :: KnownNat n => a -> Proxy n -> ([a] -> Vector t n a)
 fromList d p = \xs -> let xs' = take expLen xs
                           expLen = fromInteger $ natVal p
                       in unsafeTagVector p (fill expLen xs')
@@ -39,46 +42,52 @@ fromList d p = \xs -> let xs' = take expLen xs
 
 -- | Specialized version of 'fromList' for 'Num' types. The default
 -- value is always 0
-(|>) :: (Num a,KnownNat n) => Proxy n -> [a] -> Vector n a
+(|>) :: (Num a , KnownNat n) => Proxy n -> [a] -> Vector t n a
 (|>) = fromList 0
 
 -- **Vector operations
 -- | Addition
-(<+>) :: Num a => Vector m a -> Vector m a -> Vector m a
+(<+>) :: Num a => Vector t m a -> Vector t m a -> Vector t m a
 (<+>) (Vector xs) (Vector ys) = Vector $ V.zipWith (+) xs ys
 
 -- | Subtraction
-(<->) :: Num a => Vector n a -> Vector n a -> Vector n a
+(<->) :: Num a => Vector t n a -> Vector t n a -> Vector t n a
 (<->) (Vector v) (Vector v') = Vector $ V.zipWith (-) v v'
 
 -- | Dot product
-(<.>) :: Num a => Vector n a -> Vector n a -> a
+(<.>) :: Num a => Vector t n a -> Vector t n a -> a
 (<.>) (Vector v) (Vector v') = V.sum $ V.zipWith (*) v v' 
 
 -- | Scalar multiplication
-(^>) :: Num a => a -> Vector n a -> Vector n a
+(^>) :: Num a => a -> Vector t n a -> Vector t n a
 (^>) x (Vector xs) = Vector $ V.map (*x) xs
 
 -- ** Norms
-euclidean :: (Real a,Floating b) => Vector n a -> b 
-euclidean = sqrt . foldlV (+) 0 . mapV (realToFrac . (^2))
+euclidean :: (Real a,Floating b) => Vector t n a -> b 
+euclidean = sqrt . foldl (+) 0 . map (realToFrac . (^2))
 
-manhattan :: (Real a) => Vector n a -> a
-manhattan = foldlV (+) 0 . mapV abs
+manhattan :: (Real a) => Vector t n a -> a
+manhattan = foldl (+) 0 . map abs
 
 -- ** Useful combinators for data-structure-like operations on vectors
+-- | Vector size
+size :: KnownNat n => Vector t n a -> Integer
+size = natVal . sizeProxy
+  where sizeProxy :: Vector t n a -> Proxy n
+        sizeProxy _ = Proxy
+
 -- | Map operation
-mapV :: (a -> b) -> Vector n a -> Vector n b
-mapV f (Vector v) = Vector $ V.map f v
+map :: (a -> b) -> Vector t n a -> Vector t n b
+map f (Vector v) = Vector $ V.map f v
 
 -- | Left fold
-foldlV :: (a -> b -> a) -> a -> Vector n b -> a
-foldlV f z (Vector v) = V.foldl f z v
+foldl :: (a -> b -> a) -> a -> Vector t n b -> a
+foldl f z (Vector v) = V.foldl f z v
 
 -- | Right fold
-foldrV :: (a -> b -> b) -> b -> Vector n a -> b
-foldrV f z (Vector v) = V.foldr f z v
+foldr :: (a -> b -> b) -> b -> Vector t n a -> b
+foldr f z (Vector v) = V.foldr f z v
 
 -- | ZipWith
-zipWithV :: KnownNat n => (a -> b -> c) -> Vector n a -> Vector n b -> Vector n c
-zipWithV f (Vector v) (Vector v') =Vector $ V.zipWith f v v'
+zipWith :: KnownNat n => (a -> b -> c) -> Vector t n a -> Vector t n b -> Vector t n c
+zipWith f (Vector v) (Vector v') = Vector $ V.zipWith f v v'
